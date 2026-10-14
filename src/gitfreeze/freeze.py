@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import shutil
 import time
 from pathlib import Path
 
@@ -200,7 +199,11 @@ def cmd_freeze(args) -> int:
             state.end(root)
             raise PartialPurgeError(errors)
         if git_mode == "drop":
-            shutil.rmtree(root / ".git")
+            try:
+                fsops.rmtree(root / ".git")
+            except OSError as exc:
+                state.end(root)
+                raise PartialPurgeError([(".git", str(exc))]) from exc
         if prune:
             fsops.prune_empty_dirs(root)
         state.log(root, "freeze", mode="off", files=len(purge_paths), bytes=purge_bytes, git=git_mode)
@@ -222,7 +225,7 @@ def cmd_freeze(args) -> int:
         manifest["errors"] = [f"{p}: {e}" for p, e in purge_errors[:50]]
         trash.save(record, manifest)
         if not remaining:
-            shutil.rmtree(record, ignore_errors=True)
+            fsops.rmtree(record, ignore_errors=True)
         state.end(root)
         raise PartialPurgeError(purge_errors, rolled_back=rolled_back)
     moved = remaining

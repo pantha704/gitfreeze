@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
 import time
 from pathlib import Path
 
@@ -118,7 +117,10 @@ def empty(root, record_id: str | None = None) -> tuple[int, int]:
     for rec in recs:
         d = record_dir(root, rec["id"])
         total += fsops.dir_size(d)
-        shutil.rmtree(d)
+        try:
+            fsops.rmtree(d)
+        except OSError as exc:
+            raise GitFreezeError(f"could not fully delete {d}: {exc}") from exc
         removed += 1
     if removed and not any(trash_dir(root).iterdir()):
         try:

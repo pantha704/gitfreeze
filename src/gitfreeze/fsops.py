@@ -3,12 +3,43 @@
 from __future__ import annotations
 
 import os
+import shutil
+import stat
+import sys
 from pathlib import Path
 
 
 def lexists(path) -> bool:
     """Like os.path.exists but true for broken symlinks too."""
     return os.path.lexists(str(path))
+
+
+def rmtree(path, ignore_errors: bool = False) -> None:
+    """shutil.rmtree that copes with read-only files (git objects are read-only on Windows)."""
+    if ignore_errors:
+        shutil.rmtree(path, ignore_errors=True)
+        return
+
+    if sys.version_info >= (3, 12):
+
+        def _onexc(func, p, exc):
+            try:
+                os.chmod(p, stat.S_IWRITE)
+                func(p)
+            except OSError:
+                raise exc
+
+        shutil.rmtree(path, onexc=_onexc)
+    else:
+
+        def _onerror(func, p, exc_info):
+            try:
+                os.chmod(p, stat.S_IWRITE)
+                func(p)
+            except OSError:
+                raise exc_info[1]
+
+        shutil.rmtree(path, onerror=_onerror)
 
 
 def dir_size(path: Path, skip_top: set[str] | None = None) -> int:
