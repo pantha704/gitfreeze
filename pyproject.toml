@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gitfreeze"
+version = "0.1.0"
+description = "Freeze dormant git projects: push, purge committed files, keep secrets and envs, thaw with one script."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [{ name = "pantha704" }]
+keywords = ["git", "disk-space", "cli", "developer-tools", "archive", "restore"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Topic :: System :: Filesystems",
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+gitfreeze = "gitfreeze.cli:main"
+git-freeze = "gitfreeze.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/pantha704/gitfreeze"
+Issues = "https://github.com/pantha704/gitfreeze/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "-ra"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gitfreeze"]
