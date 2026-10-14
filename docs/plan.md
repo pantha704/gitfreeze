@@ -10,9 +10,10 @@
 - **M3 — restore**: worktree (offline) + clone merge paths, collision policy,
   `--at sha`, Windows/macOS shims ✅
 - **M4 — tests/CI**: 30 tests (bare-repo remotes, failure injection, roundtrip
-  property), 3-OS × py3.11/3.13 workflow ✅ (CI green pending first push)
+  property), 3-OS × py3.11/3.13 workflow ✅ CI green 6/6 (2026-10-15)
 - **M5 — release**: README/docs, MIT, PyPI publish via trusted publishing,
-  GitHub release with wheel/sdist ⏳ (repo + release; PyPI needs account link)
+  GitHub release with wheel/sdist ⏳ repo + tag v0.1.0 done; PyPI pending the
+  5-min trusted-publisher setup (RELEASING.md)
 
 ## Next actions
 
